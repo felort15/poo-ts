@@ -1,31 +1,26 @@
-import axios from "axios";
-import { UpdateProductDto, CreateProductDto } from "../dtos/product.dto"
-import { ProductService } from "./product-services.model"
-import { Product } from "../app/product.model"
+import { Product } from '../app/product.model';
+import { CreateProductDto, UpdateProductDto } from '../dtos/product.dto';
+import { BaseHttpService } from '../app/service/base-http.service';
+import { ProductService } from './product-services.model';
+import axios from 'axios';
 
-
-export class ProductHttpService implements ProductService {
-  private url = 'https://api.escuelajs.co/api/v1/products';
-
-  async getAll(): Promise<Product[]> {
-    const rta = await axios.get(this.url);
-    const products = rta.data;
-    return products;
-  }
-
-  async update(id: Product['id'], changes: UpdateProductDto | CreateProductDto): Promise<Product[]> {
-    const rta = await axios.put(`${this.url}/${id}`, changes);
-    return rta.data;
+export class ProductHttpService extends BaseHttpService<Product> implements ProductService {
+  constructor() {
+    super('https://api.escuelajs.co/api/v1/products');
   }
 
   async create(dto: CreateProductDto): Promise<Product[]> {
-    const rta = await axios.post(this.url, dto);
-    return rta.data;
+    const { data } = await axios.post(this.url, dto);
+    return [data];
   }
 
-  async   findOne(id: Product['id']): Promise<Product | undefined> {
-    const rta = await axios.get(`${this.url}/${id}`);
-    return rta.data;
+  async update(id: Product['id'], changes: UpdateProductDto): Promise<Product[]> {
+    const { data } = await axios.put(`${this.url}/${id}`, changes);
+    return [data];
   }
 
+  async findOne(id: Product['id']): Promise<Product | undefined> {
+    const { data } = await axios.get(`${this.url}/${id}`);
+    return data;
+  }
 }

@@ -1,7 +1,8 @@
-import { ProductHttpService } from "../service/product-http.service";
+import { ProductHttpService } from "./service/product-http.service";
+import { apiUrl } from "./service/base-http.service";
 
 (async () => {
-  const productService = new ProductHttpService();
+  const productService = new ProductHttpService(`${apiUrl}/products`);
 
   console.log('---'.repeat(10));
 
